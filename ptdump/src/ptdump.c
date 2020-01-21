@@ -930,40 +930,19 @@ static int print_ip_payload(struct ptdump_buffer *buffer, uint64_t offset,
 	if (!buffer || !packet)
 		return diag("error printing payload", offset, -pte_internal);
 
+
 	switch (packet->ipc) {
 	case pt_ipc_suppressed:
-		print_field(buffer->payload.standard, "%x: ????????????????",
-			    pt_ipc_suppressed);
-		return 0;
-
 	case pt_ipc_update_16:
-		print_field(buffer->payload.standard, "%x: ????????????%04"
-			    PRIx64, pt_ipc_update_16, packet->ip);
-		return 0;
-
 	case pt_ipc_update_32:
-		print_field(buffer->payload.standard, "%x: ????????%08"
-			    PRIx64, pt_ipc_update_32, packet->ip);
-		return 0;
-
 	case pt_ipc_update_48:
-		print_field(buffer->payload.standard, "%x: ????%012"
-			    PRIx64, pt_ipc_update_48, packet->ip);
-		return 0;
-
 	case pt_ipc_sext_48:
-		print_field(buffer->payload.standard, "%x: %016" PRIx64,
-			    pt_ipc_sext_48, sext(packet->ip, 48));
-		return 0;
-
 	case pt_ipc_full:
-		print_field(buffer->payload.standard, "%x: %016" PRIx64,
-			    pt_ipc_full, packet->ip);
+		print_field(buffer->payload.standard, "%x", packet->ipc);
 		return 0;
 	}
 
-	print_field(buffer->payload.standard, "%x: %016" PRIx64,
-		    packet->ipc, packet->ip);
+	print_field(buffer->payload.standard, "%x", packet->ipc);
 	return diag("bad ipc", offset, -pte_bad_packet);
 }
 
@@ -1244,8 +1223,10 @@ static int print_packet(struct ptdump_buffer *buffer, uint64_t offset,
 
 	case ppt_cbr:
 		print_field(buffer->opcode, "cbr");
+		/*
 		print_field(buffer->payload.standard, "%x",
 			    packet->payload.cbr.ratio);
+		*/
 
 		if (options->track_time)
 			track_cbr(buffer, tracking, offset,
